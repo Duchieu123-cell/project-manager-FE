@@ -8,6 +8,7 @@ import sidebarData from "../data/sidebarData.jsx";
 import { motion } from "framer-motion";
 import { Tooltip } from "react-tooltip";
 import ThemeToggle from "./ThemeToggle.jsx"
+import authApi from "../services/authApi.js";
 
 
 const DEFAULT_WIDTH = 250;
@@ -22,8 +23,8 @@ export default function Sidebar() {
   const { logout } = useAuthStoreActions();
   const queryClient = useQueryClient();
 
-
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await authApi.logout();
     logout();
     queryClient.clear();
   };

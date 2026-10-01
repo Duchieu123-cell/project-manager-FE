@@ -4,7 +4,7 @@ import Dashboard from './pages/Dashboard.jsx'
 import ProjectList from './pages/ProjectList.jsx'
 import ProjectDetail from './pages/ProjectDetail.jsx'
 import NotFound from './pages/NotFound.jsx'
-import AuthProvider from './context/AuthContext.jsx'
+// import AuthProvider from './context/AuthContext.jsx'
 import ProtectedRoute from './components/ProtectedRoute.jsx'
 import Login from './pages/Login.jsx'
 import Register from './pages/Register.jsx'
@@ -55,7 +55,7 @@ const router = createBrowserRouter([
             {
               element: (
                 <ProtectedRoute 
-                  permissions={[PERMISSIONS.VIEW_DASHBOARD]} 
+                  permissions={[PERMISSIONS.PROJECT_READ, PERMISSIONS.TASK_READ]} 
                   requiredAll={true} 
                 />
               ),

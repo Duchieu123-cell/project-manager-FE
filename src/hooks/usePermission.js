@@ -1,9 +1,7 @@
 import { useAuthStore } from '../stores/useAuthStore.js';
 
 export function usePermission() {
-    const user = useAuthStore.getState().user
-    const userPermissions = user?.permissions || [];
-    console.log("Custom hook usePermission vừa chạy: ", userPermissions);
+    const userPermissions = useAuthStore.getState().permissions || [];
 
     const hasPermission = (permission) => {
         return userPermissions.includes(permission);

@@ -18,9 +18,9 @@ import CanAccess from "../components/CanAccess.jsx"
     
 export default function ProjectDetail() {
     const { projectId } = useParams()
+
     const {
         data: tasks = [],
-        isLoading,
         isFetching,
         isError,
         error,
@@ -35,8 +35,6 @@ export default function ProjectDetail() {
         duedate: [],
         priority: []
     })
-
-    console.log("Filter data in ProjectDetail:", filterData)
 
     const filteredTasks = useMemo(() => {
         return tasks.filter(task => {
@@ -59,7 +57,7 @@ export default function ProjectDetail() {
     }, [filteredTasks]);
 
     const inProgressTasks = useMemo(() => {
-        return filteredTasks.filter(task => task.status === "in-progress");
+        return filteredTasks.filter(task => task.status === "in_progress");
     }, [filteredTasks]);
 
     const doneTasks = useMemo(() => {
@@ -123,83 +121,91 @@ export default function ProjectDetail() {
                     <h2 className="text-2xl text-center font-bold">Danh sách task</h2>
                 </div>
 
-                <AnimatePresence>
-                    {isFilterOpen && (
-                        <TaskFilterForm
-                            filterData={filterData}
-                            setFilterData={setFilterData}
-                            onClose={() => setIsFilterOpen(false)}
-                        />
-                    )}
+                {isError ? (
+                    <div className="text-red-500 text-center">
+                        Có lỗi xảy ra: {error.response?.data?.detail || error.message || "Lỗi không xác định"}
+                    </div>
+                ) : (
+                    <>
+                    <AnimatePresence>
+                        {isFilterOpen && (
+                            <TaskFilterForm
+                                filterData={filterData}
+                                setFilterData={setFilterData}
+                                onClose={() => setIsFilterOpen(false)}
+                            />
+                        )}
+                    </AnimatePresence>
 
-                </AnimatePresence>
-
-
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 px-4">
                 
+                        <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <h3 className="text-lg font-semibold text-slate-700 mb-4 flex items-center justify-between">
+                                <span>Cần làm</span>
+                                <span className="bg-slate-200 text-slate-600 text-xs px-2 py-1 rounded-full">
+                                    {todoTasks.length}
+                                </span>
+                            </h3>
+                            
+                            <div className="space-y-3">
+                                {todoTasks.map(task => (
+                                    <TaskCard
+                                        key={task.id}
+                                        task={task}
+                                        projectId={projectId}
+                                        onEdit={() => setIsFormOpen({ state: true, taskId: task.id })}
+                                        editDisabled={isFormOpen.state}
+                                        deleteDisabled={isFormOpen.state && isFormOpen.taskId === task.id}
+                                    />
+                                ))}
+                            </div>
+                        </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 px-4">
-            
-                    <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
-                        <h3 className="text-lg font-semibold text-slate-700 mb-4 flex items-center justify-between">
-                            <span>Cần làm</span>
-                            <span className="bg-slate-200 text-slate-600 text-xs px-2 py-1 rounded-full">
-                                {todoTasks.length}
-                            </span>
-                        </h3>
-                        
-                        <div className="space-y-3">
-                            {todoTasks.map(task => (
-                                <TaskCard
-                                    key={task.id}
-                                    task={task}
-                                    onEdit={() => setIsFormOpen({ state: true, taskId: task.id })}
-                                    editDisabled={isFormOpen.state}
-                                    deleteDisabled={isFormOpen.state && isFormOpen.taskId === task.id}
-                                />
-                            ))}
+                        <div className="bg-blue-50/50 p-4 rounded-xl border border-blue-100">
+                            <h3 className="text-lg font-semibold text-blue-700 mb-4 flex items-center justify-between">
+                                <span>Đang làm</span>
+                                <span className="bg-blue-100 text-blue-600 text-xs px-2 py-1 rounded-full">
+                                    {inProgressTasks.length}
+                                </span>
+                            </h3>
+                            <div className="space-y-3">
+                                {inProgressTasks.map(task => (
+                                    <TaskCard
+                                        key={task.id}
+                                        task={task}
+                                        projectId={projectId}
+                                        onEdit={() => setIsFormOpen({ state: true, taskId: task.id })}
+                                        editDisabled={isFormOpen.state}
+                                        deleteDisabled={isFormOpen.state && isFormOpen.taskId === task.id}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="bg-emerald-50/50 p-4 rounded-xl border border-emerald-100">
+                            <h3 className="text-lg font-semibold text-emerald-700 mb-4 flex items-center justify-between">
+                                <span>Đã xong</span>
+                                <span className="bg-emerald-100 text-emerald-600 text-xs px-2 py-1 rounded-full">
+                                    {doneTasks.length}
+                                </span>
+                            </h3>
+                            <div className="space-y-3">
+                                {doneTasks.map(task => (
+                                    <TaskCard
+                                        key={task.id}
+                                        task={task}
+                                        projectId={projectId}
+                                        onEdit={() => setIsFormOpen({ state: true, taskId: task.id })}
+                                        editDisabled={isFormOpen.state}
+                                        deleteDisabled={isFormOpen.state && isFormOpen.taskId === task.id}
+                                    />
+                                ))}
+                            </div>
                         </div>
                     </div>
-
-                    <div className="bg-blue-50/50 p-4 rounded-xl border border-blue-100">
-                        <h3 className="text-lg font-semibold text-blue-700 mb-4 flex items-center justify-between">
-                            <span>Đang làm</span>
-                            <span className="bg-blue-100 text-blue-600 text-xs px-2 py-1 rounded-full">
-                                {inProgressTasks.length}
-                            </span>
-                        </h3>
-                        <div className="space-y-3">
-                            {inProgressTasks.map(task => (
-                                <TaskCard
-                                    key={task.id}
-                                    task={task}
-                                    onEdit={() => setIsFormOpen({ state: true, taskId: task.id })}
-                                    editDisabled={isFormOpen.state}
-                                    deleteDisabled={isFormOpen.state && isFormOpen.taskId === task.id}
-                                />
-                            ))}
-                        </div>
-                    </div>
-
-                    <div className="bg-emerald-50/50 p-4 rounded-xl border border-emerald-100">
-                        <h3 className="text-lg font-semibold text-emerald-700 mb-4 flex items-center justify-between">
-                            <span>Đã xong</span>
-                            <span className="bg-emerald-100 text-emerald-600 text-xs px-2 py-1 rounded-full">
-                                {doneTasks.length}
-                            </span>
-                        </h3>
-                        <div className="space-y-3">
-                            {doneTasks.map(task => (
-                                <TaskCard
-                                    key={task.id}
-                                    task={task}
-                                    onEdit={() => setIsFormOpen({ state: true, taskId: task.id })}
-                                    editDisabled={isFormOpen.state}
-                                    deleteDisabled={isFormOpen.state && isFormOpen.taskId === task.id}
-                                />
-                            ))}
-                        </div>
-                    </div>
-                </div>
+                    </>              
+                )}
+                
             </div>            
         </div>
 

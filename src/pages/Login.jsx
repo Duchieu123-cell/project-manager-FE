@@ -5,7 +5,7 @@ import InputField from '../components/InputField.jsx'
 import { LoginSchema } from '../schema/userSchema.js'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
-import userApi from '../services/userApi.js';
+import authApi from '../services/authApi.js';
 
 export default function Login(){
     const {
@@ -26,15 +26,9 @@ export default function Login(){
     const onSubmit = async (data) => {
 
         try {
-            const user = await userApi.login(data.username, data.password);
-            const userInfo = {
-                id: user.id,
-                username: user.username,
-                email: user.email,
-                fullname: user.fullname,
-                permissions: user.permissions
-            }    
-            login(userInfo);
+            const { access_token, token_type, permissions } = await authApi.login(data.username, data.password);
+
+            login(access_token, permissions);
             navigate(previousPath, { replace: true });
 
         } catch (error) {

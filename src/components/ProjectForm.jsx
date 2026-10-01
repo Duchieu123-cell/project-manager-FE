@@ -34,8 +34,8 @@ function ProjectForm({ initialData, onClose }) {
     } = useMutation({
         mutationFn: (formData) => (
             initialData
-            ? projectApi.updateProject(initialData.id, { ...formData, lastModified: Math.floor(Date.now() / 1000) })
-            : projectApi.addProject({ ...formData, createdAt: Math.floor(Date.now() / 1000), lastModified: Math.floor(Date.now() / 1000) })
+            ? projectApi.updateProject(initialData.id, { ...formData })
+            : projectApi.addProject({ ...formData })
         ),
         onMutate: async (formData) => {
 
@@ -49,14 +49,14 @@ function ProjectForm({ initialData, onClose }) {
                 // Sửa dự án: cập nhật dữ liệu cache ngay lập tức
                 queryClient.setQueryData(
                     ["projects"],
-                    (oldProjects = []) => oldProjects.map((project) => project.id === initialData.id ? { ...project, ...formData, lastModified: Math.floor(Date.now() / 1000) } : project)
+                    (oldProjects = []) => oldProjects.map((project) => project.id === initialData.id ? { ...project, ...formData } : project)
                 )
 
                 return { previousProjects }
             } else {
                 // Thêm dự án: thêm dữ liệu cache ngay lập tức
                 const tempId = `temp ${Date.now()}`
-                const newProject = { ...formData, id: tempId, createdAt: Math.floor(Date.now() / 1000), lastModified: Math.floor(Date.now() / 1000) }
+                const newProject = { ...formData, id: tempId }
                 queryClient.setQueryData(
                     ["projects"],
                     (oldProjects = []) => [...oldProjects, newProject]

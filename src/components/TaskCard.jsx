@@ -7,12 +7,19 @@ import taskApi from "../services/taskApi.js"
 import { PERMISSIONS } from "../data/permissionData.js"
 import CanAccess from "./CanAccess.jsx"
 
-function TaskCard({ task, onEdit, editDisabled, deleteDisabled }) {
-    const { id: taskId, projectId, name, description, status, priority, createdAt, dueDate } = task
+function TaskCard({ task, projectId, onEdit, editDisabled, deleteDisabled }) {
+    const { 
+        id: taskId, 
+        name, 
+        description, 
+        status, 
+        priority, 
+        createdAt, 
+        dueDate
+    } = task
     const queryClient = useQueryClient()
     const {
-        mutate: onDelete,
-        isPending: isDeleting
+        mutate: onDelete
     } = useMutation({
         mutationFn: () => taskApi.deleteTask(taskId),
         onMutate: async () => {
@@ -40,8 +47,7 @@ function TaskCard({ task, onEdit, editDisabled, deleteDisabled }) {
     })
 
     const {
-        mutate: onStatusChange,
-        isPending: isStatusUpdating
+        mutate: onStatusChange
     } = useMutation({
         mutationFn: (newStatus) => taskApi.updateTaskStatus(taskId, newStatus),
         onMutate: async (newStatus) => {
@@ -52,9 +58,10 @@ function TaskCard({ task, onEdit, editDisabled, deleteDisabled }) {
             queryClient.setQueryData(
                 ["tasks", { projectId }],
                 (oldTasks) => oldTasks.map(
-                    (task) => (task.id === taskId ? { ...task, status: newStatus, lastModified: Math.floor(Date.now() / 1000) } : task)
+                    (task) => (task.id === taskId ? { ...task, status: newStatus } : task)
                 )
             )
+
             return { previousTasks }
 
         },
@@ -101,13 +108,13 @@ function TaskCard({ task, onEdit, editDisabled, deleteDisabled }) {
                 </CanAccess>
                 
                 <CanAccess 
-                    permissions={[PERMISSIONS.TASK_STATUS_UPDATE]} 
+                    permissions={[PERMISSIONS.TASK_UPDATE]} 
                     requiredAll={true}
                 >
-                    {status !== "in-progress" ? (
+                    {status !== "in_progress" ? (
                         <button
                             className="rounded-xl bg-yellow-300 p-2 col-span-2 hover:bg-yellow-600"
-                            onClick={() => onStatusChange("in-progress")}
+                            onClick={() => onStatusChange("in_progress")}
                         >
                             {status === "todo" ? (
                                 <>
@@ -128,7 +135,7 @@ function TaskCard({ task, onEdit, editDisabled, deleteDisabled }) {
                         </button>
                     )}
 
-                    {status === "in-progress" && (
+                    {status === "in_progress" && (
                         <button 
                             className="rounded-xl bg-green-500 p-2 hover:bg-green-700"
                             onClick={() => onStatusChange("done")}

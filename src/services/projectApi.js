@@ -11,10 +11,6 @@ const projectApi = {
     },
 
     deleteProject: async (projectId) => {
-        const tasks = await taskApi.getProjectTasks(projectId)
-
-        // Xóa tất cả các task thuộc dự án
-        await Promise.all(tasks.map((task) => taskApi.deleteTask(task.id)))
         return axiosClient.delete(`/projects/${projectId}`)
         
     },

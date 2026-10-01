@@ -10,7 +10,6 @@ const taskApi = {
     },
     
     getProjectTasks(projectId, abortSignal = null) {
-        console.log("Đang gọi API để lấy danh sách task cho projectId:", projectId);
         return axiosClient.get(`/tasks?projectId=${projectId}`, { signal: abortSignal });
     },
 
@@ -23,7 +22,6 @@ const taskApi = {
     },
 
     updateTaskStatus(taskId, newStatus) {
-        console.log(`Đang gọi API để cập nhật trạng thái của task ${taskId} thành ${newStatus}`);
         return axiosClient.patch(`/tasks/${taskId}`, { status: newStatus });
     },
 

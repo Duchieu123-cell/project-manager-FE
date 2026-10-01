@@ -47,8 +47,8 @@ function TaskForm({ initialData, onClose }) {
     } = useMutation({
         mutationFn: (formData) => (
             initialData
-            ? taskApi.updateTask(initialData.id, { ...formData, lastModified: Math.floor(Date.now() / 1000) })
-            : taskApi.addTask({ ...formData, projectId, createdAt: Math.floor(Date.now() / 1000), lastModified: Math.floor(Date.now() / 1000) })
+            ? taskApi.updateTask(initialData.id, { ...formData })
+            : taskApi.addTask({ ...formData, projectId })
         ),
         onMutate: async (formData) => {
             await queryClient.cancelQueries({ queryKey: ["tasks", { projectId }] })
@@ -134,7 +134,7 @@ function TaskForm({ initialData, onClose }) {
                 >
                     <option value="">-- Chọn status --</option>
                     <option value="todo">Cần làm</option>
-                    <option value="in-progress">Đang làm</option>
+                    <option value="in_progress">Đang làm</option>
                     <option value="done">Hoàn thành</option>
                 </select>
                 {errors.status && (
@@ -160,7 +160,7 @@ function TaskForm({ initialData, onClose }) {
                     </p>
                 )}
 
-                <InputField 
+                <InputField
                     label="Hạn chót"
                     type="date"
                     placeholder="Chọn hạn chót..."

@@ -17,8 +17,6 @@ export default function Register() {
     })
 
     const onSubmit = async (data) => {
-
-        
         try {
             const user = await userApi.register(data)
             console.log("User được đăng ký thành công: ", user)
@@ -103,7 +101,7 @@ export default function Register() {
                 </button>
 
                 {errors.formError && (
-                    <p className="text-md font-semibold text-red-500 text-center">{errors.formError.message}</p>
+                    <p className="text-md font-semibold text-red-500 text-center">Error happend: {errors.formError.message}</p>
                 )}
 
                 <div className="self-center text-sm">
