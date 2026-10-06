@@ -49,7 +49,11 @@ axiosClient.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    if (
+      error.response?.status === 401
+      && error.response?.data?.detail?.type === "expired_access_token"
+      && !originalRequest._retry
+    ) {
       // Nếu API refresh-token chính nó bị 401 -> Logout ngay lập tức
       if (originalRequest.url.includes("/auth/refresh")) {
         await authApi.logout();

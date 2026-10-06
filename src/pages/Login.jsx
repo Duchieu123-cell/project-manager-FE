@@ -34,7 +34,7 @@ export default function Login(){
         } catch (error) {
             setError("formError", {
                 type: "server",
-                message: error.message
+                message: error.response?.data?.detail?.message || "Đăng nhập thất bại. Vui lòng thử lại.",
             })
         }
 
